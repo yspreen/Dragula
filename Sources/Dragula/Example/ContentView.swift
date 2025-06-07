@@ -110,7 +110,7 @@ struct ContentView: View {
                             SectionView(section: section.wrappedValue)
                             ScrollView(.horizontal) {
                                 LazyHStack(spacing: 16) {
-                                    DragulaView(items: section.items,) { item in
+                                    DragulaView(items: section.items) { item in
                                         RoundedRectangle(cornerRadius: 16)
                                             .fill(item.color)
                                             .aspectRatio(1, contentMode: .fit)
