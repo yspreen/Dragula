@@ -15,6 +15,7 @@ struct ContentView: View {
             let id: UUID = .init()
             let title: String
             let color: Color
+            var isDraggable: Bool = true
         }
         
         let id: UUID = .init()
@@ -28,7 +29,8 @@ struct ContentView: View {
             items: [
                 .init(title: "Stare at the wall meaningfully", color: .gray),
                 .init(title: "Reorganize apps again", color: .blue),
-                .init(title: "Clean desk to avoid real work", color: .mint)
+                .init(title: "Clean desk to avoid real work", color: .mint),
+                .init(title: "Not reorderable task", color: .orange, isDraggable: false)
             ]
         ),
         Section(

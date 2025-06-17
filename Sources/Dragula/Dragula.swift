@@ -38,11 +38,16 @@ public protocol DragulaSection: Identifiable {
 ///     }
 /// }
 public protocol DragulaItem: Identifiable {
+    /// Override to make an item not draggable, default value is `true`
+    var isDraggable: Bool { get }
     /// Override to provide a meaningful item provider for drag sessions.
     func getItemProvider() -> NSItemProvider
 }
 
 extension DragulaItem {
+    /// Default implementation marks a DragulaItem as draggable
+    public var isDraggable: Bool { true }
+    
     /// Default implementation returns an empty item provider.
     public func getItemProvider() -> NSItemProvider {
         .init()
@@ -146,21 +151,23 @@ public struct DragulaSectionedView<Header: View,
                 card(item)
                 #else
                 card(item)
-                    .hidden()
+                    .hidden(item.isDraggable)
                     .overlay {
-                        DraggableView(
-                            preview: {
-                                card(item)
-                            }, dropView: {
-                                dropView?(item)
-                            }, itemProvider: {
-                                item.getItemProvider()
-                            }, onDragWillBegin: {
-                                self.draggedItems.append(item)
-                            }, onDragWillEnd: {
-                                self.draggedItems = []
-                                self.dropCompleted()
-                            })
+                        if item.isDraggable {
+                            DraggableView(
+                                preview: {
+                                    card(item)
+                                }, dropView: {
+                                    dropView?(item)
+                                }, itemProvider: {
+                                    item.getItemProvider()
+                                }, onDragWillBegin: {
+                                    self.draggedItems.append(item)
+                                }, onDragWillEnd: {
+                                    self.draggedItems = []
+                                    self.dropCompleted()
+                                })
+                        }
                     }
                     .onDrop(
                         of: supportedUTTypes,
@@ -469,5 +476,16 @@ extension EnvironmentValues {
     public var dragPreviewCornerRadius: CGFloat {
         get { self[DragPreviewCornerRadiusKey.self] }
         set { self[DragPreviewCornerRadiusKey.self] = newValue }
+    }
+}
+
+fileprivate extension View {
+    @ViewBuilder
+    func hidden(_ isHidden: Bool) -> some View {
+        if isHidden {
+            self.hidden()
+        } else {
+            self
+        }
     }
 }
