@@ -236,7 +236,7 @@ public struct DragulaView<Card: View, DropView: View, Item: DragulaItem>: View {
             card(item)
             #else
             card(item)
-                .hidden()
+                .hidden(item.isDraggable)
                 .overlay {
                     if item.isDraggable {
                         DraggableView(
