@@ -238,19 +238,21 @@ public struct DragulaView<Card: View, DropView: View, Item: DragulaItem>: View {
             card(item)
                 .hidden()
                 .overlay {
-                    DraggableView(
-                        preview: {
-                            card(item)
-                        }, dropView: {
-                            dropView?(item)
-                        }, itemProvider: {
-                            item.getItemProvider()
-                        }, onDragWillBegin: {
-                            self.draggedItems.append(item)
-                        }, onDragWillEnd: {
-                            self.draggedItems = []
-                            self.dropCompleted()
-                        })
+                    if item.isDraggable {
+                        DraggableView(
+                            preview: {
+                                card(item)
+                            }, dropView: {
+                                dropView?(item)
+                            }, itemProvider: {
+                                item.getItemProvider()
+                            }, onDragWillBegin: {
+                                self.draggedItems.append(item)
+                            }, onDragWillEnd: {
+                                self.draggedItems = []
+                                self.dropCompleted()
+                            })
+                    }
                 }
                 .onDrop(
                     of: supportedUTTypes,
